@@ -1,3 +1,6 @@
+//Big, big credit to https://github.com/jakekelly44/tech-blog for reference on this assignment.
+
+
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
