@@ -1,6 +1,7 @@
 const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 const router = require('express').Router();
+//the get request for the main page.
 router.get('/', (req, res) => {
     Post.findAll({
             attributes: [
@@ -8,10 +9,10 @@ router.get('/', (req, res) => {
                 'title',
                 'content',
                 'created_at'
-            ],
+            ], //gets all variables stored in the db
             include: [{
                     model: Comment,
-                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                    attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'], //includes the comments that are stored on posts
                     include: {
                         model: User,
                         attributes: ['username']
@@ -19,13 +20,13 @@ router.get('/', (req, res) => {
                 },
                 {
                     model: User,
-                    attributes: ['username']
+                    attributes: ['username'] //gets the username attached to a post
                 }
             ]
         })
         .then(dbPostData => {
             const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('homepage', { posts, loggedIn: req.session.loggedIn });
+            res.render('homepage', { posts, loggedIn: req.session.loggedIn }); //after the above, we map over the array of posts and render out the homepage located in views.
         })
         .catch(err => {
             console.log(err);
@@ -36,14 +37,14 @@ router.get('/', (req, res) => {
 router.get('/login', (req, res) => {
     if (req.session.loggedIn) {
         res.redirect('/');
-        return;
+        return; //if person is logged in, redirect to home page.
     }
-    res.render('login');
+    res.render('login'); //if not, render the login page.
 });
 
 router.get('/signup', (req, res) => {
     res.render('signup');
-});
+}); //If you click the signup link it takes you to the handlebars signup page!
 
 router.get('/post/:id', (req, res) => {
     Post.findOne({
@@ -77,7 +78,7 @@ router.get('/post/:id', (req, res) => {
             }
             const post = dbPostData.get({ plain: true });
             console.log(post);
-            res.render('single-post', { post, loggedIn: req.session.loggedIn });
+            res.render('single-post', { post, loggedIn: req.session.loggedIn }); //This is similar to how the homepage works, except if we click on a post it instead renders the individual post!
 
 
         })
@@ -86,6 +87,7 @@ router.get('/post/:id', (req, res) => {
             res.status(500).json(err);
         });
 });
+
 router.get('/posts-comments', (req, res) => {
     Post.findOne({
             where: {
