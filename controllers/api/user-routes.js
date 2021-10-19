@@ -109,14 +109,15 @@ router.post('/login', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-    if (req.session.loggedIn) {
-        req.session.destroy(() => {
-            res.status(204).end(); //destroys the session saves when logged out
-        });
+    if (req.session.loggedIn) { //if logged in, destroy session
+      req.session.destroy(() => {
+        res.status(204).end(); //ends the session after destriyng
+      });
     } else {
-        res.status(404).end();
+      res.status(404).end();
     }
-});
+  });
+
 
 router.put('/:id', (req, res) => {
 
