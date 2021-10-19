@@ -2,8 +2,9 @@ const router = require('express').Router();
 const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 const withAuth = require('../utils/auth');
-router.get('/', withAuth, (req, res) => {
-    Post.findAll({
+router.get('/', withAuth, async (req, res) => {
+try{
+    const dashboard = await Post.findAll({
             where: {
                 user_id: req.session.user_id
             },
@@ -27,17 +28,20 @@ router.get('/', withAuth, (req, res) => {
                 }
             ]
         }) //runs a get query to get all of users previous posts.
-        .then(dbPostData => {
-            const posts = dbPostData.map(post => post.get({ plain: true }));
+            const generateDash = await dashboard
+            const posts = generateDash.map(post => post.get({ plain: true }));
             res.render('dashboard', { posts, loggedIn: true }); //maps all the posts in an array and then renders them to the dashboard 
-        })
-        .catch(err => {
+        }
+
+        catch(err) {
             console.log(err);
             res.status(500).json(err);
-        });
+        };
 });
-router.get('/edit/:id', withAuth, (req, res) => {
-    Post.findOne({
+
+router.get('/edit/:id', withAuth, async (req, res) => {
+    try{
+    const editPost = await Post.findOne({
             where: {
                 id: req.params.id
             },
@@ -60,19 +64,20 @@ router.get('/edit/:id', withAuth, (req, res) => {
                 }
             ]
         })
-        .then(dbPostData => {
-            if (!dbPostData) {
+            const newEdit = await editPost
+            if (!newEdit) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
 
-            const post = dbPostData.get({ plain: true });
+            const post = newEdit.get({ plain: true });
             res.render('edit-post', { post, loggedIn: true });
-        })
-        .catch(err => {
+        }
+
+        catch(err) {
             console.log(err);
             res.status(500).json(err);
-        });
+        };
 })
 router.get('/new', (req, res) => {
     res.render('new-post');
