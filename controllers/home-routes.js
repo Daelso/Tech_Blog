@@ -2,8 +2,9 @@ const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 const router = require('express').Router();
 //the get request for the main page.
-router.get('/', (req, res) => {
-    Post.findAll({
+router.get('/', async (req, res) => {
+try{
+    const findPosts = await Post.findAll({
             attributes: [
                 'id',
                 'title',
@@ -24,14 +25,13 @@ router.get('/', (req, res) => {
                 }
             ]
         })
-        .then(dbPostData => {
-            const posts = dbPostData.map(post => post.get({ plain: true }));
+            const posts = findPosts.map(post => post.get({ plain: true }));
             res.render('homepage', { posts, loggedIn: req.session.loggedIn }); //after the above, we map over the array of posts and render out the homepage located in views.
-        })
-        .catch(err => {
+    }
+        catch(err) {
             console.log(err);
             res.status(500).json(err);
-        });
+        };
 });
 
 router.get('/login', (req, res) => {
@@ -46,8 +46,9 @@ router.get('/signup', (req, res) => {
     res.render('signup');
 }); //If you click the signup link it takes you to the handlebars signup page!
 
-router.get('/post/:id', (req, res) => {
-    Post.findOne({
+router.get('/post/:id', async (req, res) => {
+try{
+    const postbyID = await Post.findOne({
             where: {
                 id: req.params.id
             },
@@ -71,25 +72,26 @@ router.get('/post/:id', (req, res) => {
                 }
             ]
         })
-        .then(dbPostData => {
-            if (!dbPostData) {
+        const singlepost = await postbyID
+            if (!singlepost) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = dbPostData.get({ plain: true });
+            const post = singlepost.get({ plain: true });
             console.log(post);
             res.render('single-post', { post, loggedIn: req.session.loggedIn }); //This is similar to how the homepage works, except if we click on a post it instead renders the individual post!
 
 
-        })
-        .catch(err => {
+        }
+        catch(err) {
             console.log(err);
             res.status(500).json(err);
-        });
+        };
 });
 
-router.get('/posts-comments', (req, res) => {
-    Post.findOne({
+router.get('/posts-comments', async (req, res) => {
+try{
+    const findComment = await Post.findOne({
             where: {
                 id: req.params.id
             },
@@ -113,19 +115,19 @@ router.get('/posts-comments', (req, res) => {
                 }
             ]
         })
-        .then(dbPostData => {
-            if (!dbPostData) {
+        const findnewComment = await findComment
+            if (!findnewComment) {
                 res.status(404).json({ message: 'No post found with this id' });
                 return;
             }
-            const post = dbPostData.get({ plain: true });
+            const post = findnewComment.get({ plain: true });
 
             res.render('posts-comments', { post, loggedIn: req.session.loggedIn });
-        })
-        .catch(err => {
+        }
+        catch(err) {
             console.log(err);
             res.status(500).json(err);
-        });
+        };
 });
 
 module.exports = router;
