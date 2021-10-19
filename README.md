@@ -10,7 +10,7 @@ Big credit to https://github.com/jakekelly44/tech-blog whose repo I used closely
 
 This project was by far the hardest thus far. It took all of my knowledge of javascript, express and the newly learned handlebars. Most of the site works as intended though I could never figure out logout. You can create a new account, login and make posts to the homepage. You can also edit and comment on any of the posts found. It was a pretty good trial by fire of learning how views correlate to their controllers. I left with a much better understanding than I went in.
 
-[![Youtube demo](https://www.youtube.com/watch?v=i7Tb94DsXuc/0.jpg)](https://www.youtube.com/watch?v=IC6vA_08xwQ)
+[![Demo photo](https://i.gyazo.com/493e6c91ed6d0c769ef5ddbff8841e54.png)]
 
 
 ## Table of Contents
