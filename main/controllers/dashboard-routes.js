@@ -26,10 +26,10 @@ router.get('/', withAuth, (req, res) => {
                     attributes: ['username']
                 }
             ]
-        })
+        }) //runs a get query to get all of users previous posts.
         .then(dbPostData => {
             const posts = dbPostData.map(post => post.get({ plain: true }));
-            res.render('dashboard', { posts, loggedIn: true });
+            res.render('dashboard', { posts, loggedIn: true }); //maps all the posts in an array and then renders them to the dashboard 
         })
         .catch(err => {
             console.log(err);
